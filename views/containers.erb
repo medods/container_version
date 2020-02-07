@@ -1,17 +1,22 @@
-<a href="/list/v39">v39</a>  <a href="/list/v38">v38</a>
-
+<div class='medods-versions'>
+  <a href="/list/v39">v39</a><a href="/list/v38">v38</a>
+</div>
 <table border="1" width="1000px">
-  <tr>
-    <td width="33%"> Имя сервиса  </td>
-    <td width="33%"> Описание </td>
-    <td width="33%"> Версия </td>
-  </tr>
-  <% services.each do |s| %>
+  <thead>
     <tr>
-      <td width="33%"> <%= s['application_name'] %>
-      <td width="33%"> <%= s['description'] %>
-      <td width="33%"> <%= s['application_version'] %>
-    </tr>  
-  <% end %>
+      <td width="33%"> Имя сервиса  </td>
+      <td width="33%"> Описание </td>
+      <td width="33%"> Версия </td>
+    </tr>
+  </thead>
+  <tbody>
+    <% services.each do |s| %>
+      <tr>
+        <td width="33%"> <%= s['application_name'] %>
+        <td width="33%"> <%= s['description'] %>
+        <td width="33%"> <%= s['application_version'] %>
+      </tr>  
+    <% end %>
+  </tbody>
 </table>
 
