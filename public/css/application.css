@@ -45,3 +45,6 @@ table td, tr {
     background-color: #475264;
 }
 
+.main-container {
+    padding: 10px;
+}

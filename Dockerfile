@@ -11,5 +11,5 @@ RUN bundle install
 
 EXPOSE 8080
 
-CMD ["bundle", "exec", "rerun",  "app.rb"]
+CMD ["bundle", "exec", "ruby",  "app.rb"]
 

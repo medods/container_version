@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title> Container versions</title>
+    <link rel="stylesheet" type="text/css" href="/css/application.css" />
+  </head>
+  <body>
+    <script>
+      (function(m,w,i,d,g,e,t){
+        m['MEDODSWidgetObject']=g,m[g]=(m[g]||function(){(m[g].q=m[g].q||[]).push(Array.from(arguments))});
+        e=w.createElement(i),t=w.getElementsByTagName(i)[0];
+        e.async=1;e.src=d;t.parentNode.insertBefore(e,t);
+        })(window,document,'script','https://online-test39.medods.ru/scripts/embeddable_script.js','mv');
+      mv(
+        'updateConfiguration',
+        {
+          showRecordingButton: true,
+          origin: 'https://online-test39.medods.ru',
+          recordingButtonMessage: 'Запись онлайн',
+          recordingButtonColor: '#0a96ed'
+        }
+      );  
+    </script>
+  <div class="main-container">
+    <%= yield %>
+  </div>
+</html>
