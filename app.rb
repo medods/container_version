@@ -4,22 +4,24 @@ require 'pg'
 set :bind, '0.0.0.0'
 set :port, 8080
 
-@@connection = PG.connect :dbname => 'container_version_base',
-                          :host => 'ya-haproxy',
-                          :user => 'pguser',
-                          :password => 'S0lo1024'
-
+DB_PARAMS = {:dbname => 'container_version_base',
+             :host => 'ya-haproxy',
+             :user => 'pguser',
+             :password => 'S0lo1024'
+             }
+ 
 get '/' do
   redirect to('/list/v39')
 end
 
 get '/list/:release' do
   params['release'] ||= "v39"
-  services = @@connection.exec  %Q( SELECT * 
+  connection = PG.connect DB_PARAMS  
+  services = connection.exec  %Q( SELECT * 
                                     FROM container_versions 
-                                    WHERE 
-                                      release_version = \'#{params['release']}\')  
-
+                                  WHERE 
+                                    release_version = \'#{params['release']}\')  
+  connection.close
   erb :containers, :locals => {:services => services}
 end
 
@@ -33,7 +35,8 @@ post '/update' do
     return
   end
   
-  service = @@connection.exec %Q( SELECT * 
+  connection = PG.connect DB_PARAMS  
+  service = connection.exec %Q( SELECT * 
                                   FROM container_versions
                                   WHERE 
                                     application_name = \'#{params['service']}\' 
@@ -41,19 +44,23 @@ post '/update' do
                                     release_version = \'#{params['release']}\'
                                   LIMIT 1) 
   
+  connection.close
 
   unless service.values.empty?     
-    @@connection.exec %Q( UPDATE container_versions 
+    connection = PG.connect DB_PARAMS  
+    connection.exec %Q( UPDATE container_versions 
                           SET
                             application_version = \'#{params['version']}\'
                           WHERE 
                             application_name = \'#{params['service']}\' 
                           AND 
                             release_version = \'#{params['release']}\')
+    connection.close
     status 200
     body "Complete"
   else
-    @@connection.exec %Q( INSERT INTO 
+    connection = PG.connect DB_PARAMS  
+    connection.exec %Q( INSERT INTO 
                             container_versions
                             (release_version, application_name, 
                              application_version, description) 
@@ -62,6 +69,7 @@ post '/update' do
                              \'#{params['service']}\', 
                              \'#{params['version']}\', 
                              \'#{params['description']}\'))
+    connection.close
     status 200
     body "Complete"
  end
