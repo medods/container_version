@@ -5,9 +5,9 @@ set :bind, '0.0.0.0'
 set :port, 8080
 
 @@connection = PG.connect :dbname => 'container_version_base',
-                          :host => 'pgbouncer',
-                          :user => 'postgres',
-                          :password => '10241024'
+                          :host => 'ya-haproxy',
+                          :user => 'pguser',
+                          :password => 'S0lo1024'
 
 get '/' do
   redirect to('/list/v39')
