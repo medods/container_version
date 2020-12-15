@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'pg'
+require 'json'
 
 set :bind, '0.0.0.0'
 set :port, 8080
@@ -25,11 +26,11 @@ get '/list/:release' do
   erb :containers, :locals => {:services => services}
 end
 
-get '/last_version/:release'
+get '/last_version/:release' do
   content_type :json
   params['release'] ||= "v39"
   connection = PG.connect DB_PARAMS
-  services = connection.exec  %Q( SELECT service, version 
+  services = connection.exec  %Q( SELECT application_name, application_version 
                                     FROM container_versions 
                                   WHERE 
                                     release_version = \'#{params['release']}\')
