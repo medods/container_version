@@ -6,12 +6,9 @@ set :bind, '0.0.0.0'
 set :port, 8080
 
 DB_PARAMS = {:dbname => 'container_version_base',
-             :host => 'localhost',
+             :host => 'ya-haproxy',
              :user => 'pguser',
-             :password => 'S0lo1024'  
-             # :host => 'ya-haproxy',
-             # :user => 'pguser',
-             # :password => 'S0lo1024'
+             :password => 'S0lo1024'
              }
  
 get '/' do
