@@ -25,7 +25,16 @@ get '/list/:release' do
   erb :containers, :locals => {:services => services}
 end
 
-
+get '/last_version/:release'
+  content_type :json
+  params['release'] ||= "v39"
+  connection = PG.connect DB_PARAMS
+  services = connection.exec  %Q( SELECT service, version 
+                                    FROM container_versions 
+                                  WHERE 
+                                    release_version = \'#{params['release']}\')
+  services.to_json                                  
+end
 
 post '/update' do
   
