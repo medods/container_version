@@ -6,9 +6,12 @@ set :bind, '0.0.0.0'
 set :port, 8080
 
 DB_PARAMS = {:dbname => 'container_version_base',
-             :host => 'ya-haproxy',
+             :host => 'localhost',
              :user => 'pguser',
-             :password => 'S0lo1024'
+             :password => 'S0lo1024'  
+             # :host => 'ya-haproxy',
+             # :user => 'pguser',
+             # :password => 'S0lo1024'
              }
  
 get '/' do
@@ -34,7 +37,11 @@ get '/last_version/:release' do
                                     FROM container_versions 
                                   WHERE 
                                     release_version = \'#{params['release']}\')
-  services.to_json                                  
+  connection.close    
+  result = services.map do |row|
+    row
+  end    
+  result.to_json                            
 end
 
 post '/update' do
