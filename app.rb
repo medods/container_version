@@ -10,12 +10,9 @@ def check_aprooved(val)
 end
 
 DB_PARAMS = {:dbname => 'container_version_base',
-             # :host => 'ya-haproxy',
-             :host => 'localhost',
-             # :user => 'pguser',
-             :user => 'postgres',
-             # :password => 'S0lo1024'
-             :password => '10241024'
+             :host => 'ya-haproxy',
+             :user => 'pguser',
+             :password => 'S0lo1024'
              }
  
 get '/' do
