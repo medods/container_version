@@ -1,0 +1,25 @@
+<div class='medods-versions'>
+  <a href="/list/v40">Версии контейнеров</a>
+  <a href="/expired_certs">Уведомления</a>
+</div>
+<table border="1" width="1000px">
+  <thead>
+    <tr>
+      <td width="20%"> Дата </td>
+      <td width="60%"> Сообщение </td>
+      <td width="10%">  </td>
+      <td width="10%">  </td>
+    </tr>
+  </thead>
+  <tbody>
+    <% msgs.each do |s| %>
+      <tr>
+        <td width="20%"> <%= s['created_at'] %></td>
+        <td width="60%"> <%= s['msg'] %></td>
+        <td width="10%"> <%= s['aprooved'] == "t" ? "<i class='material-icons aprooved' data-id=#{s['id'].to_i}>done</i>" : "<i class='material-icons unaprooved' data-id=#{s['id'].to_i}>done</i>"%></td>
+        <td width="10%"> <%= "<i class='material-icons clickable delete' data-id=#{s['id'].to_i}>clear</i>" %></td>
+      </tr>  
+    <% end %>
+  </tbody>
+</table>
+

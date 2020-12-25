@@ -5,10 +5,17 @@ require 'json'
 set :bind, '0.0.0.0'
 set :port, 8080
 
+def check_aprooved(val)
+  val == "t" ? true : false
+end
+
 DB_PARAMS = {:dbname => 'container_version_base',
-             :host => 'ya-haproxy',
-             :user => 'pguser',
-             :password => 'S0lo1024'
+             # :host => 'ya-haproxy',
+             :host => 'localhost',
+             # :user => 'pguser',
+             :user => 'postgres',
+             # :password => 'S0lo1024'
+             :password => '10241024'
              }
  
 get '/' do
@@ -38,7 +45,55 @@ get '/last_version/:release' do
   result = services.map do |row|
     row
   end    
-  result.to_json                            
+  result.to_json                           
+end
+
+post '/cert_expire' do
+  connection = PG.connect DB_PARAMS  
+    connection.exec %Q( INSERT INTO 
+                            expired_certs
+                            (msg, created_at) 
+                          VALUES 
+                            (\'#{params['msg']}\', 
+                             \'#{Date.today}\'))
+    connection.close
+    status 200
+    body "Complete"
+end
+
+get '/expired_certs' do
+  connection = PG.connect DB_PARAMS  
+  msgs = connection.exec  %Q( SELECT * 
+                              FROM expired_certs
+                              ORDER BY id DESC)  
+  connection.close
+  erb :expired_certs, :locals => {:msgs => msgs}
+end  
+
+post '/change_aproove_status' do
+  connection = PG.connect DB_PARAMS  
+  event = connection.exec %Q( SELECT * 
+                                FROM expired_certs
+                                WHERE 
+                                  id = \'#{params['id']}\' 
+                                LIMIT 1)     
+  connection.exec %Q( UPDATE expired_certs 
+                      SET
+                        aprooved = \'#{!check_aprooved(event.first['aprooved'])}\'
+                      WHERE 
+                        id = \'#{params['id']}\')
+  connection.close
+  status 200
+end
+
+post '/delete_msg' do
+  connection = PG.connect DB_PARAMS  
+  connection.exec %Q( DELETE 
+                      FROM expired_certs
+                      WHERE 
+                        id = \'#{params['id']}\')     
+  connection.close
+  status 200
 end
 
 post '/update' do

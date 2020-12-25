@@ -41,10 +41,27 @@ table td, tr {
     
 }
 .medods-versions a:hover {
-      color: #e9e9e9;
+    color: #e9e9e9;
     background-color: #475264;
 }
 
 .main-container {
     padding: 10px;
 }
+
+.material-icons.aprooved { 
+    color: #3FAECA; 
+    cursor: pointer;
+}
+
+.material-icons.unaprooved { 
+    color: #6c6c6c; 
+    cursor: pointer;
+}
+
+.material-icons.delete { 
+    color: #b52e24; 
+    cursor: pointer;
+}
+
+
