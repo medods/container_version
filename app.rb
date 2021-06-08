@@ -9,6 +9,8 @@ def check_aprooved(val)
   val == "t" ? true : false
 end
 
+TOKEN = "87be19c4-80b1-480a-abda-baecab33b247"
+
 DB_PARAMS = {:dbname => 'container_version_base',
              :host => 'ya-haproxy',
              :user => 'pguser',
@@ -46,6 +48,11 @@ get '/last_version/:release' do
 end
 
 post '/vpn_connections' do
+
+  if request.env["token"] != TOKEN
+    halt 401
+  end
+
   request.body.rewind
   rp = JSON.parse request.body.read
 
