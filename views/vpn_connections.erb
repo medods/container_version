@@ -1,0 +1,26 @@
+<div class='medods-versions'>
+  <a href="/list/v40">v40</a><a href="/list/v39">v39</a><a href="/list/v38">v38</a></a><a href="/expired_certs">Уведомления</a>
+</div>
+<table border="1" width="1000px">
+  <thead>
+    <tr>
+      <td width="33%"> Дата обращения к серверу </td>
+      <td width="33%"> Название клиники  </td>
+      <td width="33%"> Ip адрес </td>
+    </tr>
+  </thead>
+  <tbody>
+    <% connections.each do |c| %>
+      <% if Date.now.to_i - c.['unixdate'].to_i > 700 %>
+        <tr class="warning-row">
+      <% else %>    
+        <tr>
+      <% end %>    
+        <td width="33%"> <%= c['last_connection'] %>
+        <td width="33%"> <%= c['clinic_name'] %>
+        <td width="33%"> <%= c['vpn_ip_address'] %>
+      </tr>  
+    <% end %>
+  </tbody>
+</table>
+

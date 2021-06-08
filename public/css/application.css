@@ -27,6 +27,10 @@ table td, tr {
     border: 0;
 }
 
+.warning-row {
+    color: #e61010;
+}
+
 .medods-versions {
     margin: auto;
     text-align: center;

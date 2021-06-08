@@ -45,6 +45,32 @@ get '/last_version/:release' do
   result.to_json                           
 end
 
+post '/vpn_connections' do
+  connection = PG.connect DB_PARAMS  
+    connection.exec %Q( INSERT INTO 
+                            vpn_connections
+                            (last_connect, clinic_name, vpn_ip_address, unixdate) 
+                          VALUES 
+                            (\'#{params['last_connect']}\', 
+                            \'#{params['clinic_name']}\', 
+                            \'#{params['vpn_ip_address']}\', 
+                            \'#{params['unixdate']}\')
+                       )
+    connection.close
+    status 200
+    body "Complete"
+end
+
+get '/vpn_connections' do
+  connection = PG.connect DB_PARAMS  
+  vpn_connections = connection.exec  %Q( SELECT * 
+                              FROM vpn_connections
+                              ORDER BY id DESC)  
+  connection.close
+  erb :vpn_connections, :locals => {:connections => vpn_connections}
+end  
+
+
 post '/cert_expire' do
   connection = PG.connect DB_PARAMS  
     connection.exec %Q( INSERT INTO 
