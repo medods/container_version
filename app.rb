@@ -14,7 +14,7 @@ DB_PARAMS = {:dbname => 'container_version_base',
              :user => 'pguser',
              :password => 'S0lo1024'
              }
- 
+
 get '/' do
   redirect to('/list/v39')
 end
@@ -46,19 +46,50 @@ get '/last_version/:release' do
 end
 
 post '/vpn_connections' do
+  request.body.rewind
+  rp = JSON.parse request.body.read
+
+  if  rp['data'].nil?
+    status 403
+    body "Empty params" 
+    return
+  end
+ 
   connection = PG.connect DB_PARAMS  
-    connection.exec %Q( INSERT INTO 
+
+  rp['data'].each do |key, value|
+
+    connect = connection.exec %Q( SELECT * 
+                                  FROM vpn_connections
+                                  WHERE 
+                                    clinic_name = \'#{value['clinic_name']}\' 
+                                  LIMIT 1) 
+
+    unless connect.values.empty?     
+      connection.exec %Q( UPDATE vpn_connections 
+                          SET
+                            last_connect = \'#{value['last_connect']}\',
+                            vpn_ip_address = \'#{value['vpn_ip_address']}\',
+                            unixdate = \'#{value['unixdate']}\'
+                          WHERE 
+                            clinic_name = \'#{value['clinic_name']}\')
+      status 200
+      body "Complete"
+    else
+      connection.exec %Q( INSERT INTO 
                             vpn_connections
                             (last_connect, clinic_name, vpn_ip_address, unixdate) 
                           VALUES 
-                            (\'#{params['last_connect']}\', 
-                            \'#{params['clinic_name']}\', 
-                            \'#{params['vpn_ip_address']}\', 
-                            \'#{params['unixdate']}\')
+                            (\'#{value['last_connect']}\', 
+                            \'#{value['clinic_name']}\', 
+                            \'#{value['vpn_ip_address']}\', 
+                            \'#{value['unixdate']}\')
                        )
-    connection.close
-    status 200
-    body "Complete"
+      status 200
+      body "Complete"
+    end
+  end
+  connection.close
 end
 
 get '/vpn_connections' do

@@ -4,21 +4,21 @@
 <table border="1" width="1000px">
   <thead>
     <tr>
-      <td width="33%"> Дата обращения к серверу </td>
       <td width="33%"> Название клиники  </td>
-      <td width="33%"> Ip адрес </td>
+      <td width="33%"> IP адрес </td>
+      <td width="33%"> Дата обращения к серверу </td>
     </tr>
   </thead>
   <tbody>
     <% connections.each do |c| %>
-      <% if Date.now.to_i - c.['unixdate'].to_i > 700 %>
+      <% if Date.today.to_time.to_i - c['unixdate'].to_i > 700 %>
         <tr class="warning-row">
       <% else %>    
         <tr>
       <% end %>    
-        <td width="33%"> <%= c['last_connection'] %>
         <td width="33%"> <%= c['clinic_name'] %>
         <td width="33%"> <%= c['vpn_ip_address'] %>
+        <td width="33%"> <%= c['last_connect'] %>
       </tr>  
     <% end %>
   </tbody>
