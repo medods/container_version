@@ -48,8 +48,8 @@ get '/last_version/:release' do
 end
 
 post '/vpn_connections' do
-
-  if request.env["token"] != TOKEN
+  
+  if request.env["HTTP_TOKEN"] != TOKEN
     halt 401
   end
 
@@ -103,7 +103,7 @@ get '/vpn_connections' do
   connection = PG.connect DB_PARAMS  
   vpn_connections = connection.exec  %Q( SELECT * 
                               FROM vpn_connections
-                              ORDER BY id DESC)  
+                              ORDER BY clinic_name ASC)  
   connection.close
   erb :vpn_connections, :locals => {:connections => vpn_connections}
 end  

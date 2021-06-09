@@ -28,7 +28,11 @@ table td, tr {
 }
 
 .warning-row {
-    background-color: #e87272;
+    background-color: #BF3139;
+}
+
+.warning-row td {
+    color: white;
 }
 
 .medods-versions {
