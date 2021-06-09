@@ -77,7 +77,8 @@ post '/vpn_connections' do
                           SET
                             last_connect = \'#{value['last_connect']}\',
                             vpn_ip_address = \'#{value['vpn_ip_address']}\',
-                            unixdate = \'#{value['unixdate']}\'
+                            unixdate = \'#{value['unixdate']}\',
+                            version = \'#{value['version']}\'
                           WHERE 
                             clinic_name = \'#{value['clinic_name']}\')
       status 200
@@ -85,11 +86,12 @@ post '/vpn_connections' do
     else
       connection.exec %Q( INSERT INTO 
                             vpn_connections
-                            (last_connect, clinic_name, vpn_ip_address, unixdate) 
+                            (last_connect, clinic_name, vpn_ip_address, version, unixdate) 
                           VALUES 
                             (\'#{value['last_connect']}\', 
                             \'#{value['clinic_name']}\', 
                             \'#{value['vpn_ip_address']}\', 
+                            \'#{value['version']}\', 
                             \'#{value['unixdate']}\')
                        )
       status 200
