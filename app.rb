@@ -70,9 +70,15 @@ post '/vpn_connections' do
                                   FROM vpn_connections
                                   WHERE 
                                     clinic_name = \'#{value['clinic_name']}\' 
-                                  LIMIT 1) 
+                                  LIMIT 1)                          
+    unless connect.values.empty?   
 
-    unless connect.values.empty?     
+      if value['unixdate'].to_s == "0"                             
+        value['last_connect'] = connect[0]['last_connect']                             
+        value['unixdate'] = connect[0]['unixdate']                             
+      end
+      value['version'] = connect[0]['version'] if value['version'].to_s == "0"
+      
       connection.exec %Q( UPDATE vpn_connections 
                           SET
                             last_connect = \'#{value['last_connect']}\',
