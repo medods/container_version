@@ -10,6 +10,7 @@ def check_aprooved(val)
 end
 
 TOKEN = "87be19c4-80b1-480a-abda-baecab33b247"
+CURRENT_RELEASE = 'v40'
 
 DB_PARAMS = {:dbname => 'container_version_base',
              :host => 'ya-haproxy',
@@ -19,6 +20,98 @@ DB_PARAMS = {:dbname => 'container_version_base',
 
 get '/' do
   redirect to('/list/v39')
+end
+
+post '/lock_cloud_versions' do
+
+  if request.env["HTTP_TOKEN"] != TOKEN
+    halt 401
+  end
+
+  connection = PG.connect DB_PARAMS  
+  services = connection.exec  %Q( SELECT application_name, application_version 
+                                    FROM container_versions 
+                                  WHERE 
+                                    release_version = \'#{CURRENT_RELEASE}\')  
+  
+
+  versions = {}                                  
+  services.each  do |service|
+    versions[service['application_name']] = 'gainanov/' + service['application_name'] + ':' + service['application_version']
+  end
+
+  result = {
+    "0":{name: "medods-ru", image: versions['medods']},
+    "1":{name: "medods-api", image: versions['medods_api']},
+    "2":{name: "client-widget", image: versions['client_widget']},
+    "3":{name: "fiscal-service", image: versions['fiscal_service']},
+    "4":{name: "analytics-service", image: versions['analytics_service']},
+    "5":{name: "analysis-service", image: versions['analysis_service']},
+    "6":{name: "api-gateway", image: versions['apigw']},
+    "7":{name: "auth-service", image: versions['auth_service']},
+    "8":{name: "mdlp-service", image: versions['mdlp_service']},
+    "9":{name: "work-time-service", image: versions['work_time_service']},
+    "10":{name: "data-export-service", image: versions['data_export_service']}
+  }.to_json
+  connection.exec %Q( INSERT INTO 
+                        cloud_updates
+                        (data, test_date, stage_date, prod_date) 
+                      VALUES 
+                        (\'#{result}\', 
+                        \'#{Date.today}\', 
+                        \'#{Date.today + 1}\', 
+                        \'#{Date.today + 2}\')
+                   )
+  connection.close
+  status 200                 
+end
+
+get '/cloud_versions/*/:date' do
+  content_type :json
+  type = params['splat'].first
+  date = params['date']
+  
+
+  unless type == 'stage' || type == 'test' || type == 'prod'
+    status 403
+    return
+  end
+  
+  update = nil
+  connection = PG.connect DB_PARAMS  
+
+  case type
+  when 'test'
+    update = connection.exec  %Q( SELECT data 
+                                    FROM cloud_updates 
+                                  WHERE 
+                                    test_date = \'#{date}\'
+                                  LIMIT 1  )
+  when 'stage'
+    update = connection.exec  %Q( SELECT data 
+                                    FROM cloud_updates 
+                                  WHERE 
+                                    stage_date = \'#{date}\'
+                                  LIMIT 1  )
+  when 'prod'
+    update = connection.exec  %Q( SELECT data 
+                                    FROM cloud_updates 
+                                  WHERE 
+                                    prod_date = \'#{date}\'
+                                  LIMIT 1  )
+  else
+    status 404
+  end 
+
+  connection.close
+
+  if update.nil?
+    status 404 
+    return
+  end
+
+  update.getvalue(0,0)
+
 end
 
 get '/list/:release' do
@@ -69,7 +162,7 @@ post '/vpn_connections' do
     connect = connection.exec %Q( SELECT * 
                                   FROM vpn_connections
                                   WHERE 
-                                    clinic_name = \'#{value['clinic_name']}\' 
+                                    uuid = \'#{key}\' 
                                   LIMIT 1)                          
     unless connect.values.empty?   
 
@@ -84,17 +177,19 @@ post '/vpn_connections' do
                             last_connect = \'#{value['last_connect']}\',
                             vpn_ip_address = \'#{value['vpn_ip_address']}\',
                             unixdate = \'#{value['unixdate']}\',
+                            clinic_name = \'#{value['clinic_name']}\',
                             version = \'#{value['version']}\'
                           WHERE 
-                            clinic_name = \'#{value['clinic_name']}\')
+                            uuid = \'#{key}\')
       status 200
       body "Complete"
     else
       connection.exec %Q( INSERT INTO 
                             vpn_connections
-                            (last_connect, clinic_name, vpn_ip_address, version, unixdate) 
+                            (last_connect, uuid, clinic_name, vpn_ip_address, version, unixdate) 
                           VALUES 
                             (\'#{value['last_connect']}\', 
+                            \'#{key}\', 
                             \'#{value['clinic_name']}\', 
                             \'#{value['vpn_ip_address']}\', 
                             \'#{value['version']}\', 
