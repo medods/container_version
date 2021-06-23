@@ -17,10 +17,10 @@
       <% else %>    
         <tr>
       <% end %>    
-        <td width="65%"> <%= c['clinic_name'] %>
-        <td width="10%"> <%= c['version'] %>
-        <td width="10%"> <%= c['vpn_ip_address'] %>
-        <td width="15%"> <%= c['last_connect'] %>
+        <td class="title-column" width="65%"> <%= c['clinic_name'] %></td>
+        <td width="10%"> <%= c['version'] %></td>
+        <td width="10%"> <%= c['vpn_ip_address'] %></td>
+        <td width="15%"> <%= c['last_connect'] %></td><span class="outdate-warning"><%= "!" if Time.now.to_i - c['unixdate'].to_i > 604800 %><span> 
       </tr>  
     <% end %>
   </tbody>

@@ -27,6 +27,16 @@ table td, tr {
     border: 0;
 }
 
+.outdate-warning {
+    padding-left: 5px;
+    color: #BF3139;
+}
+
+.title-column {
+    text-align: left;
+    padding-left: 10px;
+}
+
 .warning-row {
     background-color: #BF3139;
 }
