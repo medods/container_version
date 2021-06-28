@@ -147,6 +147,7 @@ post '/vpn_connections' do
   end
 
   request.body.rewind
+
   rp = JSON.parse request.body.read
 
   if  rp['data'].nil?
@@ -155,10 +156,13 @@ post '/vpn_connections' do
     return
   end
  
+  puts rp
+  actual_values = []
   connection = PG.connect DB_PARAMS  
 
   rp['data'].each do |key, value|
-
+    actual_values << key.to_s
+    value['last_connect'] = "" if value['unixdate'].to_s == "0"
     connect = connection.exec %Q( SELECT * 
                                   FROM vpn_connections
                                   WHERE 
@@ -166,11 +170,9 @@ post '/vpn_connections' do
                                   LIMIT 1)                          
     unless connect.values.empty?   
 
-      if value['unixdate'].to_s == "0"                             
-        value['last_connect'] = connect[0]['last_connect']                             
-        value['unixdate'] = connect[0]['unixdate']                             
-      end
-      value['version'] = connect[0]['version'] if value['version'].to_s == "0"
+      next if value['unixdate'].to_s == "0"  
+
+      value['version'] = connect[0]['version'] if value['version'].to_s == "0" || value['version'].to_s.empty?
       
       connection.exec %Q( UPDATE vpn_connections 
                           SET
@@ -199,6 +201,11 @@ post '/vpn_connections' do
       body "Complete"
     end
   end
+  range = "'#{actual_values.join("','")}'"
+  connection.exec %Q( DELETE 
+                      FROM vpn_connections
+                      WHERE 
+                        uuid NOT IN (#{range}) )                          
   connection.close
 end
 

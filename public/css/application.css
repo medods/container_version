@@ -28,7 +28,9 @@ table td, tr {
 }
 
 .outdate-warning {
-    padding-left: 5px;
+    background-color: white;
+}
+.outdate-warning span {
     color: #BF3139;
 }
 

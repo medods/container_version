@@ -1,13 +1,13 @@
 <div class='medods-versions'>
   <a href="/list/v40">v40</a><a href="/list/v39">v39</a><a href="/list/v38">v38</a></a><a href="/expired_certs">Уведомления</a>
 </div>
-<table border="1" width="1000px">
+<table id="vpn-connections" border="1" width="1000px">
   <thead>
     <tr>
-      <td width="65%"> Название клиники  </td>
-      <td width="10%"> Версия </td>
-      <td width="10%"> IP адрес </td>
-      <td width="15%"> Дата обращения к серверу </td>
+      <th width="70%"> Название клиники  </th>
+      <th width="6%"> Версия </th>
+      <th width="12%"> Истечение сертификата </th>
+      <th width="12%"> Дата обращения к серверу </th>
     </tr>
   </thead>
   <tbody>
@@ -17,10 +17,17 @@
       <% else %>    
         <tr>
       <% end %>    
-        <td class="title-column" width="65%"> <%= c['clinic_name'] %></td>
-        <td width="10%"> <%= c['version'] %></td>
-        <td width="10%"> <%= c['vpn_ip_address'] %></td>
-        <td width="15%"> <%= c['last_connect'] %></td><span class="outdate-warning"><%= "!" if Time.now.to_i - c['unixdate'].to_i > 604800 %><span> 
+        <td class="title-column" width="70%"> <%= c['clinic_name'] %></td>
+        <td width="6%"> <%= c['version'] %></td>
+        <td width="12%"> <%= c['sert'] %></td>
+        <td class="time-column" width="12%"> <%= c['last_connect'] %></td>
+        <td class="outdate-warning">
+          <span>
+          <% if Time.now.to_i - c['unixdate'].to_i > 604800 %>  
+            !
+          <% end %>
+        </span>
+      </td>
       </tr>  
     <% end %>
   </tbody>

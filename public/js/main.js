@@ -23,6 +23,11 @@
         }});
       });
 
+      $(document).ready(function() { 
+        console.log($("#vpn-connections"))
+        $("#vpn-connections").tablesorter();
+      }); 
+
       $(document).on("click", ".delete",function(e){
         if (confirm('Удалить сообщение?')) {
           $.ajax({type: "POST",
