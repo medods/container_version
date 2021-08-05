@@ -18,6 +18,51 @@ DB_PARAMS = {:dbname => 'container_version_base',
              :password => 'S0lo1024'
              }
 
+
+MODULES = [
+  "МДЛП",
+  "СМСУ",
+  "СМСР",
+  "КАСС",
+  "СКЛА",
+  "ТЕЛЕ",
+  "ЗУБО",
+  "ВИДЖ",
+  "ЛАБО",
+  "ХЕЛИ",
+  "ИНВИ",
+  "ОТЗЫ",
+  "АПИ",
+  "ЭКСП",
+  "ТЕХП"
+]             
+
+
+def sert_date_parse(date)
+  date = "0" + date if date.size == 16
+  day = date[0..1]                 
+  month = date[2..4]      
+  year = date[7..8]  
+  time = date[9..13] 
+  months = {
+    Jan: "01",
+    Feb: "02",
+    Mar: "03",
+    Apr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Aug: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dec: "12"
+  }
+
+  return "#{day}-#{months[month.to_sym]}-#{year} #{time}"
+
+end             
+
 get '/' do
   redirect to('/list/v39')
 end
@@ -163,6 +208,8 @@ post '/vpn_connections' do
   rp['data'].each do |key, value|
     actual_values << key.to_s
     value['last_connect'] = "" if value['unixdate'].to_s == "0"
+    value['sert'] = sert_date_parse(value['sert']) unless value['sert'].to_s == "0" || value['sert'].nil?
+    value['modules'] = value['modules'].filter_map.with_index {|m, i| MODULES[i] if m.to_s == 't'}.join(', ') unless value['modules'].to_s == "0" || value['modules'].nil?
     connect = connection.exec %Q( SELECT * 
                                   FROM vpn_connections
                                   WHERE 
@@ -173,13 +220,16 @@ post '/vpn_connections' do
       next if value['unixdate'].to_s == "0"  
 
       value['version'] = connect[0]['version'] if value['version'].to_s == "0" || value['version'].to_s.empty?
-      
+      value['sert'] = connect[0]['sert'] if value['sert'].to_s == "0" || value['sert'].to_s.empty?
+      value['modules'] = connect[0]['modules'] if value['modules'].to_s == "0" || value['modules'].to_s.empty?
       connection.exec %Q( UPDATE vpn_connections 
                           SET
                             last_connect = \'#{value['last_connect']}\',
                             vpn_ip_address = \'#{value['vpn_ip_address']}\',
                             unixdate = \'#{value['unixdate']}\',
                             clinic_name = \'#{value['clinic_name']}\',
+                            sert = \'#{value['sert']}\',
+                            modules = \'#{value['modules']}\',
                             version = \'#{value['version']}\'
                           WHERE 
                             uuid = \'#{key}\')
@@ -188,12 +238,14 @@ post '/vpn_connections' do
     else
       connection.exec %Q( INSERT INTO 
                             vpn_connections
-                            (last_connect, uuid, clinic_name, vpn_ip_address, version, unixdate) 
+                            (last_connect, uuid, clinic_name, vpn_ip_address, sert, modules, version, unixdate) 
                           VALUES 
                             (\'#{value['last_connect']}\', 
                             \'#{key}\', 
                             \'#{value['clinic_name']}\', 
                             \'#{value['vpn_ip_address']}\', 
+                            \'#{value['sert']}\', 
+                            \'#{value['modules']}\', 
                             \'#{value['version']}\', 
                             \'#{value['unixdate']}\')
                        )
