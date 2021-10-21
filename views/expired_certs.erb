@@ -5,10 +5,10 @@
 <table border="1" width="1000px">
   <thead>
     <tr>
-      <td width="20%"> Дата </td>
-      <td width="60%"> Сообщение </td>
-      <td width="10%">  </td>
-      <td width="10%">  </td>
+      <th width="20%"> Дата </th>
+      <th width="60%"> Сообщение </th>
+      <th width="10%">  </th>
+      <th width="10%">  </th>
     </tr>
   </thead>
   <tbody>
@@ -18,7 +18,7 @@
         <td width="60%"> <%= s['msg'] %></td>
         <td width="10%"> <%= s['aprooved'] == "t" ? "<i class='material-icons aprooved' data-id=#{s['id'].to_i}>done</i>" : "<i class='material-icons unaprooved' data-id=#{s['id'].to_i}>done</i>"%></td>
         <td width="10%"> <%= "<i class='material-icons clickable delete' data-id=#{s['id'].to_i}>clear</i>" %></td>
-      </tr>  
+      </tr>
     <% end %>
   </tbody>
 </table>

@@ -17,14 +17,32 @@ tbody tr:hover {
 }
 
 thead tr {
-    background-color: #3FAECA;
+    color: #3FAECA;
+    font-weight: bold;
+    border-bottom-color: #c0c0c0;
     text-align: center;
-    color: #e9e9e9;
-    border: 0px;
 }
 
-table td, tr {
-    border: 0;
+thead > tr {
+    background-color: white !important;
+}
+
+table {
+    border-collapse: collapse;
+    border-color: white;
+}
+
+tr > td {
+    padding: 8px 0;
+}
+
+tr > th {
+    padding: 16px 0;
+}
+
+
+tr:nth-child(odd) {
+    background-color: #f8f8f8;
 }
 
 .outdate-warning {
@@ -40,7 +58,16 @@ table td, tr {
 }
 
 .warning-row {
-    background-color: #BF3139;
+    background-color: #ffb8bf !important;
+}
+
+.warning-row > td {
+    color: #4d4d4d !important;
+}
+
+.warning-row:hover > td {
+    background-color: #ff646a !important;
+    color: white !important;
 }
 
 .warning-row td {
@@ -53,15 +80,14 @@ table td, tr {
 }
 
 .medods-versions a {
-    color: #e9e9e9;
+    color: white;
     padding: 10px;
     margin: 10px;
     text-decoration: none;
     background-color: #3FAECA;
-    
+    border-radius: 4px;
 }
 .medods-versions a:hover {
-    color: #e9e9e9;
     background-color: #475264;
 }
 
@@ -69,19 +95,34 @@ table td, tr {
     padding: 10px;
 }
 
-.material-icons.aprooved { 
-    color: #3FAECA; 
+.material-icons.aprooved {
+    color: #3FAECA;
     cursor: pointer;
 }
 
-.material-icons.unaprooved { 
-    color: #6c6c6c; 
+.material-icons.unaprooved {
+    color: #6c6c6c;
     cursor: pointer;
 }
 
-.material-icons.delete { 
-    color: #b52e24; 
+.material-icons.delete {
+    color: #b52e24;
     cursor: pointer;
 }
 
+.header
+{
+    cursor: pointer;
+    position: relative;
+    vertical-align: middle;
+}
 
+.headerSortDown:after {
+    content: '\25BC';
+    position: absolute;
+}
+
+.headerSortUp:after {
+    content: '\25B2';
+    position: absolute;
+}

@@ -4,33 +4,33 @@
 <table id="vpn-connections" border="1" width="1000px">
   <thead>
     <tr>
-      <th width="50%"> Название клиники  </th>
-      <th width="20%"> Модули  </th>
+      <th width="40%"> Название клиники  </th>
+      <th width="30%"> Модули  </th>
       <th width="6%"> Версия </th>
-      <th width="12%"> Истечение сертификата </th>
-      <th width="12%"> Дата обращения к серверу </th>
+      <th width="12%"> Сертификат </th>
+      <th width="12%"> Обращение </th>
     </tr>
   </thead>
   <tbody>
     <% connections.each do |c| %>
       <% if Time.now.to_i - c['unixdate'].to_i > 700 %>
         <tr class="warning-row">
-      <% else %>    
+      <% else %>
         <tr>
-      <% end %>    
-        <td class="title-column" width="50%"> <%= c['clinic_name'] %></td>
-        <td width="20%"> <%= c['modules'] %></td>
-        <td width="6%"> <%= c['version'] %></td>
-        <td width="12%"> <%= c['sert'] %></td>
-        <td class="time-column" width="12%"> <%= c['last_connect'] %></td>
+      <% end %>
+        <td class="title-column" width="40%" title="<%= c['clinic_name'] %>"><%= c['clinic_name'] %></td>
+        <td width="30%"><%= c['modules'] %></td>
+        <td width="6%"><%= c['version'] %></td>
+        <td width="12%"><%= c['sert'] %></td>
+        <td class="time-column" width="12%"><%= c['last_connect'] %></td>
         <td class="outdate-warning">
           <span>
-          <% if Time.now.to_i - c['unixdate'].to_i > 604800 %>  
+          <% if Time.now.to_i - c['unixdate'].to_i > 604800 %>
             !
           <% end %>
         </span>
       </td>
-      </tr>  
+      </tr>
     <% end %>
   </tbody>
 </table>
