@@ -17,10 +17,14 @@ tbody tr:hover {
 }
 
 thead tr {
+    border-bottom: 1px solid #c0c0c0;
     color: #3FAECA;
     font-weight: bold;
-    border-bottom-color: #c0c0c0;
     text-align: center;
+}
+
+thead th {
+    border: none;
 }
 
 thead > tr {
