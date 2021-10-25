@@ -12,8 +12,12 @@ end
 TOKEN = "87be19c4-80b1-480a-abda-baecab33b247"
 CURRENT_RELEASE = 'v40'
 
+ENV['USER_NAME'] ||= 'admin'
+ENV['USER_PASSWORD'] ||= 'admin'
+ENV['DATABASE_URL'] ||= 'localhost'
+
 DB_PARAMS = {:dbname => 'container_version_base',
-             :host => 'ya-haproxy',
+             :host => ENV['DATABASE_URL'],
              :user => 'pguser',
              :password => 'S0lo1024'
              }
@@ -61,7 +65,26 @@ def sert_date_parse(date)
 
   return "#{day}-#{months[month.to_sym]}-#{year} #{time}"
 
-end             
+end        
+
+
+
+helpers do
+  def protected!
+    return if authorized?
+    headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+    halt 401, "Not authorized\n"
+  end
+
+  def authorized?
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == [ENV['USER_NAME'], ENV['USER_PASSWORD']]
+  end
+end
+
+
+
+
 
 get '/' do
   redirect to('/list/v39')
@@ -262,6 +285,10 @@ post '/vpn_connections' do
 end
 
 get '/vpn_connections' do
+
+  protected!
+
+
   connection = PG.connect DB_PARAMS  
   vpn_connections = connection.exec  %Q( SELECT * 
                               FROM vpn_connections
