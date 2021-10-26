@@ -69,11 +69,6 @@ tr:nth-child(odd) {
     color: #4d4d4d !important;
 }
 
-.warning-row:hover > td {
-    background-color: #ff646a !important;
-    color: white !important;
-}
-
 .warning-row td {
     color: white;
 }
