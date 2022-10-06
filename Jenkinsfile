@@ -34,12 +34,7 @@ pipeline {
                 sh "rm -rf ./build"
             }
         }
-    post {
-       always {
-           mattermostSend color: COLOR_MAP[currentBuild.currentResult],
-                     message: "*${currentBuild.currentResult}:*  Job `${env.JOB_NAME}` build ${env.BUILD_NUMBER} \n <${env.BUILD_URL}|More info>"
-       }
-            }
+
         }
     }
 }
