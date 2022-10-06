@@ -1,3 +1,29 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good',
+    'FAILURE': 'danger',
+]
+
+def cancelPreviousBuilds() {
+    def jobName = env.JOB_NAME
+    def buildNumber = env.BUILD_NUMBER.toInteger()
+    def currentJob = Jenkins.instance.getItemByFullName(jobName)
+
+    for (def build : currentJob.builds) {
+        def exec = build.getExecutor()
+        if (build.isBuilding() && buildNumber.toInteger() != buildNumber && exec != null) {
+            exec.interrupt(
+                    Result.ABORTED,
+                    new CauseOfInterruption.UserInterruption("Job aborted by #${currentBuild.number}")
+                )
+            println("Job aborted previously running build #${build.number}")
+        }
+    }
+}
+
+def buildNumber = env.BUILD_NUMBER as int
+if (buildNumber > 1) milestone(buildNumber - 1)
+milestone(buildNumber)
+
 pipeline {
     agent any 
     environment {
