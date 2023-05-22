@@ -10,7 +10,7 @@ def check_aprooved(val)
 end
 
 TOKEN = "87be19c4-80b1-480a-abda-baecab33b247"
-CURRENT_RELEASE = 'v405'
+CURRENT_RELEASE = 'release'
 
 ENV['USER_NAME'] ||= 'admin'
 ENV['USER_PASSWORD'] ||= 'admin'
@@ -87,7 +87,7 @@ end
 
 
 get '/' do
-  redirect to('/list/v405')
+  redirect to('/list/release')
 end
 
 post '/lock_cloud_versions' do
