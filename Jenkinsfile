@@ -27,9 +27,9 @@ milestone(buildNumber)
 pipeline {
     agent any 
     environment {
-      registryPrivate = "gainanov/container_version"
+      registryPrivate = "cr.yandex/crpnmti3balb7c51t8qm/gainanov/container_version"
       registryCredential = 'dockerhub'
-      registryCredentialPrivate = 'dockerhub-private'
+      registryCredentialPrivate = 'ycloud-registry'
       kubectlCredential = 'yandex-kubectl'
       yandexCredential = 'yandex-server'
       dockerImage =' '
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 echo 'Pushing..'
                 script {
-                    docker.withRegistry( '', registryCredentialPrivate ) {
+                    docker.withRegistry( 'https://cr.yandex', registryCredentialPrivate ) {
                         dockerImagePrivate.push()
                     }
                 }
